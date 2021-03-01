@@ -1,0 +1,20 @@
+{
+  "name": "vueelmentadmin",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "echarts": "^5.0.2",
+    "element-plus": "^1.0.2-beta.32",
+    "nprogress": "^0.2.0",
+    "vue": "^3.0.4",
+    "vue-router": "^4.0.4",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "vite": "^1.0.0-rc.13",
+    "@vue/compiler-sfc": "^3.0.4"
+  }
+}
