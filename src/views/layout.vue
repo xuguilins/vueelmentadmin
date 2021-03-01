@@ -63,7 +63,25 @@
           </div>
         </div>
       </el-header>
-      <el-main>
+      <div>
+        <el-tabs v-model="activeName" type="card" @tab-click="tabSelect" @tab-remove="tabRemove">
+          <el-tab-pane
+            v-for="item in tabData"
+            :key="item.name"
+            :name="item.name"
+            :closable="item.isClose"
+            lazy
+          >
+            <template #label>
+              <span>
+                <i class="el-icon-s-opportunity"></i>
+                {{item.name}}
+              </span>
+            </template>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <el-main style="background:#f0f2f5">
         <router-view />
       </el-main>
     </el-container>
@@ -71,19 +89,34 @@
 </template>
 
 <script>
-import {  ref } from "vue";
-import {  useRouter } from "vue-router";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import LeftMenuItem from "../components/LeftMenuItem.vue";
 import LeftMenuSubItem from "../components/LeftMenuSubItem.vue";
+import { ElMessage } from "element-plus";
+import { useStore } from "vuex";
+import mutationModel from "../store/mutationType.js";
 export default {
   name: "layout",
   components: {
     "left-menu-item": LeftMenuItem,
     "left-menu-subitem": LeftMenuSubItem,
   },
+  computed: {
+    tabData() {
+      const store = useStore();
+      let tabData = store.getters.useTabData;
+      console.log('tabdata',tabData)
+      if (tabData.length <= 0) {
+        tabData = [{ name: "首页", path: "/layout/home", isClose: false }];
+      }
+      return tabData;
+    },
+  },
   setup() {
     const isActive = ref(false);
     const collapse = ref(false);
+    const activeName = ref("首页");
     const mentList = ref([
       {
         name: "首页",
@@ -99,75 +132,60 @@ export default {
         id: "2",
         children: [
           {
-            name: "用户信息管理",
-            path: "/2-1",
+            name: "学生管理",
+            path: "/layout/student",
             icon: "el-icon-s-fold",
             id: "2-1",
           },
           {
-            name: "学生信息管理",
-            path: "/2-2",
-            icon: "el-icon-s-fold",
-            id: "2-2",
-          },
-          {
             name: "教师信息管理",
-            path: "/2-3",
+            path: "/layout/teacher",
             icon: "el-icon-s-fold",
             id: "2-3",
-          },
-          {
-            name: "车位信息管理",
-            path: "/2-4",
-            icon: "el-icon-s-fold",
-            id: "2-4",
-          },
-          {
-            name: "住宿信息管理",
-            path: "/2-5",
-            icon: "el-icon-s-fold",
-            id: "2-5",
-          },
-        ],
-      },
-      {
-        name: "学习管理",
-        path: "/",
-        icon: "",
-        id: "3",
-        children: [
-          {
-            name: "展示信息管理",
-            path: "/",
-            icon: "el-icon-s-fold",
-            id: "3-1",
-          },
-          {
-            name: "头部信息管理",
-            path: "/",
-            icon: "el-icon-s-fold",
-            id: "3-2",
-          },
-          {
-            name: "底部信息管理",
-            path: "/",
-            icon: "el-icon-s-fold",
-            id: "3-3",
-          },
-          {
-            name: "边上信息管理",
-            path: "/",
-            icon: "el-icon-s-fold",
-            id: "3-4",
           },
         ],
       },
     ]);
     const router = useRouter();
+    const store = useStore();
     const menuSelect = (index, indexPath) => {
-      router.push({
-        path: index,
-      });
+      debugger
+      let objItem = {};
+      let itemChildern = mentList.value;
+      for (let i = 0; i < itemChildern.length; i++) {
+        let item = itemChildern[i];
+        if (item.children <= 0) {
+          if (item.path === index) {
+            objItem = item;
+            break;
+          }
+        } else {
+          objItem = item.children.find((m) => m.path === index);
+        }
+      }
+
+      if (objItem !== undefined && objItem.name !== undefined) {
+        store.dispatch(mutationModel.SET_TABPAGE, objItem);
+        router.push({
+          path: index,
+        });
+      }
+    };
+    const tabSelect = (element) => {
+      activeName.value = element.paneName;
+    };
+    const tabRemove = (name) => {
+      let list = tabList.value;
+      if (list.length === 1) {
+        ElMessage.warning({
+          message: "这是最后一个选项卡，您无法删除哦",
+          type: "warning",
+        });
+        return;
+      } else {
+        var index = list.findIndex((x) => x.name === name);
+        list.splice(index, 1);
+      }
     };
     console.log("menulist", mentList.value);
     return {
@@ -175,12 +193,22 @@ export default {
       isActive,
       collapse,
       mentList,
+      tabSelect,
+      activeName,
+      tabRemove,
     };
   },
 };
 </script>
 
 <style>
+.el-tabs__nav-wrap {
+  background: #fff;
+  margin-bottom: 0px !important;
+}
+.el-tabs__header {
+  margin: 0px !important;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   min-height: 100vh;
 }
@@ -204,12 +232,12 @@ export default {
 .header-div {
   width: 100%;
   height: 50px;
-  border-bottom: 2px solid #f7f7f7;
-  box-shadow: -1px 2px 5px #d2d0d0;
+  border-bottom: 1px solid #e8e8e8;
   line-height: 50px;
 }
 .el-header {
   padding: 0px !important;
+  height: auto !important;
 }
 .left-close {
   float: left;

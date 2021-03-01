@@ -4,7 +4,7 @@
       <i class="el-icon-location"></i>
       <span v-show="!isClose">{{menuName}}</span>
     </template>
-    <el-menu-item v-for="item in children" :key="item.name" :index="item.id">{{item.name}}</el-menu-item>
+    <el-menu-item v-for="item in children" :key="item.name" :index="item.path">{{item.name}}</el-menu-item>
   </el-submenu>
 </template>
 

@@ -15,7 +15,7 @@ const store = createStore({
         [mutationModel.SET_TABPAGE](state, obj) {
             console.log('准备查询选项卡', obj)
             let item = state.tabCardData.find(x => x.name === obj.name)
-            console.log('选模型卡是', item)
+            console.log('检查是否查询到选项卡', item)
             if (item === null || item === undefined)
                 state.tabCardData.push(obj)
         }

@@ -13,14 +13,33 @@ const router = createRouter({
         component: LayOut,
         redirect: '/layout/home',
         children: [{
-            name: 'home',
-            path: '/layout/home',
-            meta: {
-                title: '首页'
+                name: 'home',
+                path: '/layout/home',
+                meta: {
+                    title: '首页'
+                },
+                component: () =>
+                    import ('../views/home.vue')
             },
-            component: () =>
-                import ('../views/home.vue')
-        }]
+            {
+                name: '学生管理',
+                path: '/layout/student',
+                meta: {
+                    title: '学生管理'
+                },
+                component: () =>
+                    import ('../views/studen.vue')
+            },
+            {
+                name: '老师管理',
+                path: '/layout/teacher',
+                meta: {
+                    title: '老师管理'
+                },
+                component: () =>
+                    import ('../views/teacher.vue')
+            }
+        ]
 
 
     }]
@@ -32,6 +51,7 @@ NProgress.configure({
 })
 router.beforeEach((to, from, next) => {
     NProgress.start()
+    document.title = to.meta.title
     next()
 })
 router.afterEach(action => {
