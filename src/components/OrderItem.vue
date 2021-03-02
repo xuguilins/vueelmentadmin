@@ -6,7 +6,7 @@
 
 <script>
 import * as Echarts from "echarts";
-import { nextTick, onMounted } from "vue";
+import { nextTick, onMounted, warn, watch } from "vue";
 import { useMonthData } from "../utils/index.js";
 export default {
   name: "OrderItem",

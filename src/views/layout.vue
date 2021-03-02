@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside :class="[collapse?'layout-left':'layout-left-close']">
+    <el-aside :class="[collapse ? 'layout-left' : 'layout-left-close']">
       <el-menu
         default-active="/layout/home"
         class="el-menu-vertical-demo"
@@ -13,7 +13,7 @@
       >
         <div v-for="menu in mentList" :key="menu.name">
           <left-menu-item
-            v-if="menu.children.length<=0"
+            v-if="menu.children.length <= 0"
             :indexNumber="menu.path"
             :iconName="menu.icon"
             :menuName="menu.name"
@@ -31,13 +31,20 @@
     <el-container>
       <el-header>
         <div class="header-div">
-          <div class="left-close" @click="collapse=!collapse">
-            <span :class="[ collapse ?'el-icon-s-unfold':'el-icon-s-fold']"></span>
+          <div class="left-close" @click="collapse = !collapse">
+            <span :class="[collapse ? 'el-icon-s-unfold' : 'el-icon-s-fold']"></span>
           </div>
           <div class="right-user">
             <div class="float-left">
               <img
-                style="position: relative; top: 9px;right: 5px;width: 30px;height: 30px;border-radius: 50%;"
+                style="
+                  position: relative;
+                  top: 9px;
+                  right: 5px;
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                "
                 src="../assets/images/user.jpg"
               />
               <el-dropdown>
@@ -64,7 +71,12 @@
         </div>
       </el-header>
       <div>
-        <el-tabs v-model="activeName" type="card" @tab-click="tabSelect" @tab-remove="tabRemove">
+        <el-tabs
+          v-model="activeName"
+          type="card"
+          @tab-click="tabSelect"
+          @tab-remove="tabRemove"
+        >
           <el-tab-pane
             v-for="item in tabData"
             :key="item.name"
@@ -75,13 +87,13 @@
             <template #label>
               <span>
                 <i class="el-icon-s-opportunity"></i>
-                {{item.name}}
+                {{ item.name }}
               </span>
             </template>
           </el-tab-pane>
         </el-tabs>
       </div>
-      <el-main style="background:#f0f2f5">
+      <el-main style="background: #f0f2f5">
         <router-view />
       </el-main>
     </el-container>
@@ -106,9 +118,15 @@ export default {
     tabData() {
       const store = useStore();
       let tabData = store.getters.useTabData;
-      console.log('tabdata',tabData)
+      let count = tabData.length;
+      console.log("legfnth", tabData.length);
       if (tabData.length <= 0) {
-        tabData = [{ name: "首页", path: "/layout/home", isClose: false }];
+        let json = { name: "首页", path: "/layout/home", isClose: false };
+        tabData = [json];
+        store.dispatch(mutationModel.SET_TABPAGE, json);
+      } else if (count === 1) {
+        this.activeName = tabData[0].name;
+        console.log('this',this)
       }
       return tabData;
     },
@@ -136,46 +154,58 @@ export default {
             path: "/layout/student",
             icon: "el-icon-s-fold",
             id: "2-1",
+            isClose: true,
           },
           {
-            name: "教师信息管理",
+            name: "老师管理",
             path: "/layout/teacher",
             icon: "el-icon-s-fold",
             id: "2-3",
+            isClose: true,
           },
         ],
       },
     ]);
     const router = useRouter();
     const store = useStore();
-    const menuSelect = (index, indexPath) => {
-      debugger
-      let objItem = {};
-      let itemChildern = mentList.value;
-      for (let i = 0; i < itemChildern.length; i++) {
-        let item = itemChildern[i];
-        if (item.children <= 0) {
-          if (item.path === index) {
-            objItem = item;
-            break;
-          }
-        } else {
-          objItem = item.children.find((m) => m.path === index);
-        }
-      }
-
+    const menuSelect = (index) => {
+      let objItem = parMentItem(mentList.value, index, "path");
       if (objItem !== undefined && objItem.name !== undefined) {
+        activeName.value = objItem.name;
         store.dispatch(mutationModel.SET_TABPAGE, objItem);
         router.push({
           path: index,
         });
       }
     };
+    const parMentItem = (itemChildern, name, fiterName) => {
+      let objItem = {};
+      for (let i = 0; i < itemChildern.length; i++) {
+        let item = itemChildern[i];
+        if (item.children <= 0) {
+          if (item[fiterName] === name) {
+            objItem = item;
+            break;
+          }
+        } else {
+          objItem = item.children.find((m) => m[fiterName] === name);
+          if (objItem !== undefined && objItem !== null) break;
+        }
+      }
+      return objItem;
+    };
     const tabSelect = (element) => {
-      activeName.value = element.paneName;
+      let name = element.paneName;
+      activeName.value = name;
+      let item = parMentItem(mentList.value, name, "name");
+      if (item !== null && item !== undefined && item.path !== undefined)
+        router.push({
+          path: item.path,
+        });
     };
     const tabRemove = (name) => {
-      let list = tabList.value;
+      console.log("name", name);
+      let list = store.getters.useTabData;
       if (list.length === 1) {
         ElMessage.warning({
           message: "这是最后一个选项卡，您无法删除哦",
@@ -183,8 +213,12 @@ export default {
         });
         return;
       } else {
-        var index = list.findIndex((x) => x.name === name);
-        list.splice(index, 1);
+        store.dispatch(mutationModel.REMOVE_TABPAGE, name);
+        let value = store.getters.GET_LASTTABPAGE;
+        activeName.value = value.name;
+        router.push({
+          path: value.path,
+        });
       }
     };
     console.log("menulist", mentList.value);
@@ -224,7 +258,7 @@ export default {
 .layout-left-close {
   background: #001529;
   /* height: 100vh; */
-  width: 200px !important;
+  width: 201px !important;
 }
 .active-item {
   background: #1890ff !important;
@@ -256,5 +290,9 @@ export default {
 }
 .float-left {
   float: left;
+}
+.is-acitve-tab {
+  color: #5f4e46;
+  background: #f5f5f5;
 }
 </style>

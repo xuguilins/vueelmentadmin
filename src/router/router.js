@@ -5,6 +5,8 @@ import {
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import LayOut from '../views/layout.vue'
+import store from '../store/index.js';
+import mutationModel from "../store/mutationType";
 const router = createRouter({
     history: createWebHistory(),
     routes: [{
@@ -52,6 +54,12 @@ NProgress.configure({
 router.beforeEach((to, from, next) => {
     NProgress.start()
     document.title = to.meta.title
+    let json = {
+        name: to.meta.title,
+        path: to.path,
+        isClose: true
+    }
+    store.dispatch(mutationModel.SET_TABPAGE, json)
     next()
 })
 router.afterEach(action => {
