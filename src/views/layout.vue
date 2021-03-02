@@ -11,21 +11,11 @@
         :collapse="collapse"
         :collapse-transition="false"
       >
-        <div v-for="menu in mentList" :key="menu.name">
-          <left-menu-item
-            v-if="menu.children.length <= 0"
-            :indexNumber="menu.path"
-            :iconName="menu.icon"
-            :menuName="menu.name"
-          ></left-menu-item>
-          <left-menu-subitem
-            :children="menu.children"
-            :menuName="menu.name"
-            :indexNumber="menu.path"
-            :isClose="collapse"
-            v-else
-          ></left-menu-subitem>
-        </div>
+        <left-menu-item
+          v-for="menu in mentList"
+          :key="menu.name"
+          :menu="menu"
+        ></left-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -94,14 +84,7 @@
         </el-tabs>
       </div>
       <el-main style="background: #f0f2f5">
-        <div v-if="RouterKeep">
-          <keep-alive>
-            <router-view />
-          </keep-alive>
-        </div>
-        <div v-else>
-          <router-view />
-        </div>
+        <router-view />
       </el-main>
     </el-container>
   </el-container>
@@ -111,7 +94,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LeftMenuItem from "../components/LeftMenuItem.vue";
-import LeftMenuSubItem from "../components/LeftMenuSubItem.vue";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import mutationModel from "../store/mutationType.js";
@@ -119,8 +101,7 @@ import { config } from "../../public/config/index";
 export default {
   name: "layout",
   components: {
-    "left-menu-item": LeftMenuItem,
-    "left-menu-subitem": LeftMenuSubItem,
+    "left-menu-item": LeftMenuItem
   },
   computed: {
     tabData() {
@@ -154,7 +135,7 @@ export default {
       {
         name: "基础数据管理",
         path: "/2",
-        icon: "",
+        icon: "el-icon-s-fold",
         id: "2",
         children: [
           {
@@ -163,6 +144,7 @@ export default {
             icon: "el-icon-s-fold",
             id: "2-1",
             isClose: true,
+            children: [],
           },
           {
             name: "老师管理",
@@ -170,6 +152,33 @@ export default {
             icon: "el-icon-s-fold",
             id: "2-3",
             isClose: true,
+            children: [
+              {
+                name: "老师A管理",
+                path: "/A/teacAher",
+                icon: "el-icon-s-fold",
+                id: "2-A",
+                isClose: true,
+                children: [],
+              },
+              {
+                name: "老师B管理",
+                path: "/A/B",
+                icon: "el-icon-s-fold",
+                id: "2-b",
+                isClose: true,
+                children: [
+                  {
+                    name: "老师Bfff管理",
+                    path: "/A/ffB",
+                    icon: "el-icon-s-fold",
+                    id: "2-ffb",
+                    isClose: true,
+                    children: [],
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -256,7 +265,6 @@ export default {
   min-height: 100vh;
 }
 .el-menu--collapse {
-  width: 60px !important;
   height: 100vh;
 }
 .layout-left {

@@ -1,43 +1,39 @@
 <template>
-  <div>
-       <el-menu-item :index="indexNumber">
-          <i  :class="iconName"></i>
-          <template #title>{{menuName}}</template>
-        </el-menu-item>
-  </div>
+    <template v-if="menu.children.length <= 0">
+      <el-menu-item :index="menu.path">
+        <i :class="menu.icon"></i>
+        <template #title>{{ menu.name }}</template>
+      </el-menu-item>
+    </template>
+    <template v-else>
+      <el-submenu :index="menu.path">
+        <template #title>
+          <i :class="menu.icon"></i>
+         <span> {{ menu.name }}</span>
+        </template>
+        <menu-item
+          v-for="item in menu.children"
+          :key="item.name"
+          :menu="item"
+        ></menu-item>
+      </el-submenu>
+    </template>
 </template>
 
 <script>
-
 export default {
-    name:'menu-item',
-    components:{
-    },
-    props:{
-      indexNumber:{
-          type:String,
-          default(){
-              return '100'
-          }
+  name: "menu-item",
+  components: {},
+  props: {
+    menu: {
+      type: Object,
+      default() {
+        return {};
       },
-      iconName:{
-          type:String,
-          default(){
-              return 'el-icon-setting'
-          }
-      },
-      menuName:{
-        type:String,
-        default(){
-            return ""
-        }
-      }
     },
-    setup() {
-    }
-}
+  },
+  setup() {},
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
