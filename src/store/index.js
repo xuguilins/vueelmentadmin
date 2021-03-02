@@ -2,6 +2,7 @@ import {
     createStore
 } from 'vuex'
 import mutationModel from './mutationType.js'
+import { config } from '../../public/config/index'
 const store = createStore({
     state: {
         tabCardData: []
@@ -11,15 +12,18 @@ const store = createStore({
             return state.tabCardData
         },
         [mutationModel.GET_LASTTABPAGE]: (state) => {
-            let count = state.tabCardData.length
-            if (count >= 1) {
-                return state.tabCardData[count - 1]
-            } else {
-                return {
-                    name: '首页',
-                    path: '/layout/home'
+            if (config.showTabBar) {
+                let count = state.tabCardData.length
+                if (count >= 1) {
+                    return state.tabCardData[count - 1]
+                } else {
+                    return {
+                        name: '首页',
+                        path: '/layout/home'
+                    }
                 }
             }
+
 
         }
     },

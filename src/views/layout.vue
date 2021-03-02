@@ -70,7 +70,7 @@
           </div>
         </div>
       </el-header>
-      <div>
+      <div v-if="showTabBar">
         <el-tabs
           v-model="activeName"
           type="card"
@@ -94,7 +94,14 @@
         </el-tabs>
       </div>
       <el-main style="background: #f0f2f5">
-        <router-view />
+        <div v-if="RouterKeep">
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </div>
+        <div v-else>
+          <router-view />
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -108,6 +115,7 @@ import LeftMenuSubItem from "../components/LeftMenuSubItem.vue";
 import { ElMessage } from "element-plus";
 import { useStore } from "vuex";
 import mutationModel from "../store/mutationType.js";
+import { config } from "../../public/config/index";
 export default {
   name: "layout",
   components: {
@@ -126,7 +134,7 @@ export default {
         store.dispatch(mutationModel.SET_TABPAGE, json);
       } else if (count === 1) {
         this.activeName = tabData[0].name;
-        console.log('this',this)
+        console.log("this", this);
       }
       return tabData;
     },
@@ -230,6 +238,7 @@ export default {
       tabSelect,
       activeName,
       tabRemove,
+      ...config,
     };
   },
 };
