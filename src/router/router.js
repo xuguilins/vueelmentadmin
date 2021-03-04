@@ -10,41 +10,47 @@ import mutationModel from "../store/mutationType";
 const router = createRouter({
     history: createWebHistory(),
     routes: [{
-        name: 'layout',
-        path: '/',
-        component: LayOut,
-        redirect: '/layout/home',
-        children: [{
-                name: 'home',
-                path: '/layout/home',
-                meta: {
-                    title: '首页'
+            name: 'layout',
+            path: '/',
+            component: LayOut,
+            redirect: '/login',
+            children: [{
+                    name: 'home',
+                    path: '/layout/home',
+                    meta: {
+                        title: '首页'
+                    },
+                    component: () =>
+                        import ('../views/home.vue')
                 },
-                component: () =>
-                    import ('../views/home.vue')
-            },
-            {
-                name: '学生管理',
-                path: '/layout/student',
-                meta: {
-                    title: '学生管理'
+                {
+                    name: '学生管理',
+                    path: '/layout/student',
+                    meta: {
+                        title: '学生管理'
+                    },
+                    component: () =>
+                        import ('../views/studen.vue')
                 },
-                component: () =>
-                    import ('../views/studen.vue')
-            },
-            {
-                name: '老师管理',
-                path: '/layout/teacher',
-                meta: {
-                    title: '老师管理'
-                },
-                component: () =>
-                    import ('../views/teacher.vue')
-            }
-        ]
+                {
+                    name: '老师管理',
+                    path: '/layout/teacher',
+                    meta: {
+                        title: '老师管理'
+                    },
+                    component: () =>
+                        import ('../views/teacher.vue')
+                }
+            ]
+        },
+        {
+            name: 'login',
+            path: '/login',
+            component: () =>
+                import ('../views/login.vue')
+        }
 
-
-    }]
+    ]
 
 })
 NProgress.configure({
