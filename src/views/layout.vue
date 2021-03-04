@@ -11,11 +11,7 @@
         :collapse="collapse"
         :collapse-transition="false"
       >
-        <left-menu-item
-          v-for="menu in mentList"
-          :key="menu.name"
-          :menu="menu"
-        ></left-menu-item>
+        <left-menu-item v-for="menu in mentList" :key="menu.name" :menu="menu"></left-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -37,20 +33,20 @@
                 "
                 src="../assets/images/user.jpg"
               />
-              <el-dropdown>
+              <el-dropdown @command="handlerClick">
                 <span class="el-dropdown-link">
                   徐贵林
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item>
+                    <el-dropdown-item command="userhome">
                       <span class="el-icon-user"></span> 个人中心
                     </el-dropdown-item>
-                    <el-dropdown-item>
+                    <el-dropdown-item command="userset">
                       <span class="el-icon-setting"></span> 个人设置
                     </el-dropdown-item>
-                    <el-dropdown-item>
+                    <el-dropdown-item command="exit">
                       <span class="el-icon-circle-close"></span> 退出登录
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -61,12 +57,7 @@
         </div>
       </el-header>
       <div v-if="showTabBar">
-        <el-tabs
-          v-model="activeName"
-          type="card"
-          @tab-click="tabSelect"
-          @tab-remove="tabRemove"
-        >
+        <el-tabs v-model="activeName" type="card" @tab-click="tabSelect" @tab-remove="tabRemove">
           <el-tab-pane
             v-for="item in tabData"
             :key="item.name"
@@ -94,14 +85,14 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LeftMenuItem from "../components/LeftMenuItem.vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { useStore } from "vuex";
 import mutationModel from "../store/mutationType.js";
 import { config } from "../../public/config/index";
 export default {
   name: "layout",
   components: {
-    "left-menu-item": LeftMenuItem
+    "left-menu-item": LeftMenuItem,
   },
   computed: {
     tabData() {
@@ -238,6 +229,24 @@ export default {
         });
       }
     };
+    const handlerClick = (ele) => {
+      if (ele === "exit") {
+        ElMessageBox.confirm("您确定要退出系统?", "系统提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          closeOnClickModal:false,
+          roundButton:true
+        })
+          .then(() => {
+            router.push({name:'login'})
+          })
+          .catch(() => {
+            console.log("我关闭");
+          });
+      }
+      // router.push({name:'login'})
+    };
     console.log("menulist", mentList.value);
     return {
       menuSelect,
@@ -247,6 +256,7 @@ export default {
       tabSelect,
       activeName,
       tabRemove,
+      handlerClick,
       ...config,
     };
   },

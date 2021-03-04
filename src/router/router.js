@@ -46,6 +46,9 @@ const router = createRouter({
         {
             name: 'login',
             path: '/login',
+            meta: {
+                title: '用户登录'
+            },
             component: () =>
                 import ('../views/login.vue')
         }
@@ -65,7 +68,8 @@ router.beforeEach((to, from, next) => {
         path: to.path,
         isClose: true
     }
-    store.dispatch(mutationModel.SET_TABPAGE, json)
+    if (to.meta.title !== '用户登录')
+        store.dispatch(mutationModel.SET_TABPAGE, json)
     next()
 })
 router.afterEach(action => {
