@@ -124,52 +124,26 @@ export default {
         id: "1",
       },
       {
-        name: "基础数据管理",
+        name: "系统管理",
         path: "/2",
         icon: "el-icon-s-fold",
         id: "2",
         children: [
           {
-            name: "学生管理",
-            path: "/layout/student",
+            name: "角色管理",
+            path: "/layout/roleGroup",
             icon: "el-icon-s-fold",
             id: "2-1",
             isClose: true,
-            children: [],
+             children: []
           },
           {
-            name: "老师管理",
-            path: "/layout/teacher",
+            name: "权限管理",
+            path: "/layout/permissGroup",
             icon: "el-icon-s-fold",
             id: "2-3",
             isClose: true,
-            children: [
-              {
-                name: "老师A管理",
-                path: "/A/teacAher",
-                icon: "el-icon-s-fold",
-                id: "2-A",
-                isClose: true,
-                children: [],
-              },
-              {
-                name: "老师B管理",
-                path: "/A/B",
-                icon: "el-icon-s-fold",
-                id: "2-b",
-                isClose: true,
-                children: [
-                  {
-                    name: "老师Bfff管理",
-                    path: "/A/ffB",
-                    icon: "el-icon-s-fold",
-                    id: "2-ffb",
-                    isClose: true,
-                    children: [],
-                  },
-                ],
-              },
-            ],
+             children: []
           },
         ],
       },

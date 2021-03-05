@@ -40,7 +40,26 @@ const router = createRouter({
                     },
                     component: () =>
                         import ('../views/teacher.vue')
-                }
+                },
+                {
+                    name: '权限管理',
+                    path: '/layout/permissGroup',
+                    meta: {
+                        title: '权限管理'
+                    },
+                    component: () =>
+                        import ('../views/permissGroup.vue')
+                },
+                {
+                    name: '角色管理',
+                    path: '/layout/roleGroup',
+                    meta: {
+                        title: '角色管理'
+                    },
+                    component: () =>
+                        import ('../views/roleGroup.vue')
+                },
+
             ]
         },
         {
